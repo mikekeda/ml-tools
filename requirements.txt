@@ -1,0 +1,5 @@
+sanic==23.12.1
+Sanic-Cors==2.2.0
+numpy==1.26.4
+requests==2.31.0
+torch==2.2.1
