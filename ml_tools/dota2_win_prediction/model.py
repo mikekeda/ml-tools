@@ -56,22 +56,9 @@ hidden_dim = 256  # Size of hero embedding
 dota2_prediction_model = HeroInteractionModel(num_heroes, hidden_dim)
 
 pwd = os.path.dirname(os.path.realpath(__file__))
-path = os.path.join(pwd, "HeroInteractionModel_t19_53_37.pt")
+path = os.path.join(pwd, "HeroInteractionModel.pt")
 
 dota2_prediction_model.load_state_dict(torch.load(path))
-
-
-# def get_dota_prediction(team1, team2):
-#     team1 = torch.as_tensor(team1).float().to(DEVICE)
-#     team2 = torch.as_tensor(team2).float().to(DEVICE)
-#
-#     dota2_prediction_model.eval()
-#     with torch.no_grad():
-#         outputs = dota2_prediction_model(team1, team2)
-#
-#     team1_win_probability = round(100 * outputs.item(), 1)
-#
-#     return team1_win_probability
 
 
 def predict_radiant_win(radiant_heroes, dire_heroes):

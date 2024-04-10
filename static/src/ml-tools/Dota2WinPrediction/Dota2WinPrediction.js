@@ -101,7 +101,8 @@ const Dota2WinPrediction = () => {
     <div>
       <Typography variant="h3" gutterBottom>Dota 2 Win Prediction</Typography>
       <Typography variant="subtitle1" style={{marginBottom: '1rem'}}>
-        To predict the winning team, select 5 heroes for each team. Selected heroes are marked. To deselect a hero,
+        Trained on <b>570,286</b> matches from <a href="https://opendota.com" rel="noreferrer" target="_blank">opendota.com</a> data as of <b>April 10, 2024</b>, with a <b>67%</b> accuracy rate<br/>
+        To predict the winning team, select <b>5</b> heroes for each team. Selected heroes are marked. To deselect a hero,
         click on them again.
       </Typography>
       {/* Render Dota hero avatars and handle selection */}
