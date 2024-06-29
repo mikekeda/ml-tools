@@ -2,7 +2,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Card, CardContent, Typography, CardMedia } from '@mui/material';
-import Dota2WinPredictionData from './ml-tools/Dota2WinPrediction/toolData'; // Adjust the path as necessary
+import Dota2WinPredictionData from './ml-tools/Dota2WinPrediction/toolData';
+import StocksPricePredictionData from './ml-tools/StocksPricePrediction/toolData';
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -10,6 +11,7 @@ const HomePage = () => {
   // Directly define the ML tools data here
   const mlTools = [
     Dota2WinPredictionData,
+    StocksPricePredictionData,
     // Add more ML tools as needed
   ];
 

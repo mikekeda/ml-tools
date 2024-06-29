@@ -7,6 +7,7 @@ import Header from './components/Header'; // Adjust the import path based on you
 
 import HomePage from './HomePage';
 import Dota2WinPrediction from './ml-tools/Dota2WinPrediction';
+import StocksPricePrediction from './ml-tools/StocksPricePrediction';
 import NotFoundPage from './NotFoundPage'; // Your 404 page component
 
 const App = () => {
@@ -17,6 +18,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/dota2-win-prediction" element={<Dota2WinPrediction />} />
+        <Route path="/stocks-price-prediction" element={<StocksPricePrediction />} />
         <Route path="*" element={<NotFoundPage />} />
         {/* Add other ML tool routes as needed */}
       </Routes>
