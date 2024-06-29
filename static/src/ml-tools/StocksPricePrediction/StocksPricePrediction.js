@@ -31,7 +31,10 @@ const StocksPricePrediction = () => {
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/ml-tools/stocks-price-prediction?symbol=${symbol}`);
+      const baseUrl = window.location.hostname === 'localhost' 
+      ? 'http://localhost:8000' 
+      : `http://${window.location.hostname}`;
+      const response = await fetch(`${baseUrl}/api/ml-tools/stocks-price-prediction?symbol=${symbol}`);
       const data = await response.json();
       setChartsData((prevData) => ({
         ...prevData,
