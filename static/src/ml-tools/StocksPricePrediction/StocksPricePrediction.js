@@ -49,7 +49,6 @@ const StocksPricePrediction = () => {
 
   const handleAddChart = async () => {
     if (currentSymbol && !stockSymbols.includes(currentSymbol.toUpperCase())) {
-      console.log("in");
       await fetchStockData(currentSymbol);
       setStockSymbols([...stockSymbols, currentSymbol.toUpperCase()]);
       setCurrentSymbol(''); // Clear the input after adding
