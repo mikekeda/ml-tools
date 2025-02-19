@@ -26,12 +26,12 @@ async def fetch_stock_data(symbol: str) -> dict:
     data = await loop.run_in_executor(None, lambda: yf.download(symbol, period="2y"))
     stock_data = [
         {
-            "datetime": time.strftime('%Y-%m-%d %H:%M:%S'),
-            "open": row['Open'],
-            "high": row['High'],
-            "low": row['Low'],
-            "close": row['Close'],
-            "volume": row['Volume']
+            "datetime": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "open": row["Open"],
+            "high": row["High"],
+            "low": row["Low"],
+            "close": row["Close"],
+            "volume": row["Volume"],
         }
         for time, row in data.iterrows()
     ]
@@ -40,10 +40,10 @@ async def fetch_stock_data(symbol: str) -> dict:
 
 async def get_stock_prices_prediction(stock_data: list, period: int) -> dict:
     df = pd.DataFrame(stock_data)
-    df['ds'] = pd.to_datetime(df['datetime'])
-    df['y'] = df['close'].astype(float)
+    df["ds"] = pd.to_datetime(df["datetime"])
+    df["y"] = df["close"].astype(float)
 
-    df_prophet = df[['ds', 'y']]
+    df_prophet = df[["ds", "y"]]
     loop = asyncio.get_event_loop()
     m = Prophet(
         changepoint_prior_scale=0.1,
@@ -51,26 +51,25 @@ async def get_stock_prices_prediction(stock_data: list, period: int) -> dict:
         weekly_seasonality=True,
         daily_seasonality=False,
     )
-    m.add_country_holidays(country_name='US')
+    m.add_country_holidays(country_name="US")
     await loop.run_in_executor(None, m.fit, df_prophet)
-    future = await loop.run_in_executor(None, lambda: m.make_future_dataframe(periods=7))
+    future = await loop.run_in_executor(
+        None, lambda: m.make_future_dataframe(periods=7)
+    )
     forecast = await loop.run_in_executor(None, m.predict, future)
 
     period_ago = pd.to_datetime(datetime.now() - timedelta(days=period + 1))
-    forecast = forecast[forecast['ds'] > period_ago]
+    forecast = forecast[forecast["ds"] > period_ago]
 
-    forecast['ds'] = forecast['ds'].dt.strftime('%Y-%m-%d %H:%M:%S')
-    forecast.rename(
-        columns={'ds': 'datetime'},
-        inplace=True
-    )
-    forecast = forecast[['datetime', 'yhat']].to_dict('records')
-    forecast = {v['datetime']: v for v in forecast}
+    forecast["ds"] = forecast["ds"].dt.strftime("%Y-%m-%d %H:%M:%S")
+    forecast.rename(columns={"ds": "datetime"}, inplace=True)
+    forecast = forecast[["datetime", "yhat"]].to_dict("records")
+    forecast = {v["datetime"]: v for v in forecast}
     return forecast
 
 
 # Endpoint for fetching ML tools
-@app.route('/api/ml-tools/dota2-win-prediction', methods=['GET'])
+@app.route("/api/ml-tools/dota2-win-prediction", methods=["GET"])
 async def get_dota2_prediction(request):
     try:
         team1 = list(map(int, request.args.get("team1", "").split(",")))
@@ -86,7 +85,7 @@ async def get_dota2_prediction(request):
     return response.json(team1_win_probability)
 
 
-@app.route('/api/ml-tools/stocks-price-prediction', methods=['GET'])
+@app.route("/api/ml-tools/stocks-price-prediction", methods=["GET"])
 async def get_stock_prediction(request):
     symbol = request.args.get("symbol", "").upper()
     period = int(request.args.get("period", "14"))
@@ -107,21 +106,29 @@ async def get_stock_prediction(request):
     if need_update:
         stock_data = await fetch_stock_data(symbol)
         print(stock_data)
-        with open(file_path, mode='w', newline='') as file:
-            writer = csv.DictWriter(file, fieldnames=["datetime", "open", "high", "low", "close", "volume"])
+        with open(file_path, mode="w", newline="") as file:
+            writer = csv.DictWriter(
+                file, fieldnames=["datetime", "open", "high", "low", "close", "volume"]
+            )
             writer.writeheader()
             writer.writerows(stock_data)
     else:
-        with open(file_path, mode='r') as file:
+        with open(file_path, mode="r") as file:
             reader = csv.DictReader(file)
             stock_data = [row for row in reader]
 
     forecast = await get_stock_prices_prediction(stock_data, period)
 
-    stock_data = {row["datetime"]: {"datetime": row["datetime"], "close": row["close"]} for row in stock_data if
-                  row["datetime"] >= (datetime.now() - timedelta(days=period)).strftime('%Y-%m-%d')}
+    stock_data = {
+        row["datetime"]: {"datetime": row["datetime"], "close": row["close"]}
+        for row in stock_data
+        if row["datetime"]
+        >= (datetime.now() - timedelta(days=period)).strftime("%Y-%m-%d")
+    }
 
-    combined_data = {k: {**stock_data.get(k, {}), **forecast.get(k, {})} for k in
-                     sorted(list(set(stock_data) | set(forecast)))}
+    combined_data = {
+        k: {**stock_data.get(k, {}), **forecast.get(k, {})}
+        for k in sorted(list(set(stock_data) | set(forecast)))
+    }
 
     return response.json(list(combined_data.values()))

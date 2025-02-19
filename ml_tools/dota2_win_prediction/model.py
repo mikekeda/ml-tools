@@ -9,7 +9,7 @@ DEVICE = torch.device("cpu")  # cpu, gpu, mps
 
 
 class HeroInteractionModel(nn.Module):
-    def __init__(self, num_heroes, hidden_dim):
+    def __init__(self, num_heroes: int, hidden_dim: int):
         super(HeroInteractionModel, self).__init__()
         self.num_heroes = num_heroes
         # Define layers for processing individual team inputs
@@ -39,7 +39,9 @@ class HeroInteractionModel(nn.Module):
         dire_counter = F.relu(self.fc_counter(dire_hidden - radiant_hidden))
 
         # Combine features from synergies and counter-picks
-        combined_features = torch.cat((radiant_synergy + radiant_counter, dire_synergy + dire_counter), dim=1)
+        combined_features = torch.cat(
+            (radiant_synergy + radiant_counter, dire_synergy + dire_counter), dim=1
+        )
         combined_features = self.dropout(combined_features)
 
         # Final prediction layer
@@ -61,7 +63,7 @@ path = os.path.join(pwd, "HeroInteractionModel.pt")
 dota2_prediction_model.load_state_dict(torch.load(path))
 
 
-def predict_radiant_win(radiant_heroes, dire_heroes):
+def predict_radiant_win(radiant_heroes: list[int], dire_heroes: list[int]) -> float:
     # Preprocess input: one-hot encoding
     radiant_input = torch.zeros(1, dota2_prediction_model.num_heroes)
     dire_input = torch.zeros(1, dota2_prediction_model.num_heroes)
