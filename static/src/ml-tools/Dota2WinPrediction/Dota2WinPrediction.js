@@ -71,7 +71,7 @@ const Dota2WinPrediction = () => {
     const queryString = `?team1=${selectedHeroesTeam1.join(',')}&team2=${selectedHeroesTeam2.join(',')}`;
     const baseUrl = window.location.hostname === 'localhost' 
     ? 'http://localhost:8000' 
-    : `http://${window.location.hostname}`;
+    : `https://${window.location.hostname}`;
 
     setIsLoading(true); // Start loading while fetching the prediction
     axios

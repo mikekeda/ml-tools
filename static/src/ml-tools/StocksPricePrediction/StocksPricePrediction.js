@@ -33,7 +33,7 @@ const StocksPricePrediction = () => {
     try {
       const baseUrl = window.location.hostname === 'localhost' 
       ? 'http://localhost:8000' 
-      : `http://${window.location.hostname}`;
+      : `https://${window.location.hostname}`;
       const response = await fetch(`${baseUrl}/api/ml-tools/stocks-price-prediction?symbol=${symbol}`);
       const data = await response.json();
       setChartsData((prevData) => ({
