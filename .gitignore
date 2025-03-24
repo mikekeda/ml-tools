@@ -8,6 +8,9 @@
 # testing
 /coverage
 
+# data
+/ml_tools/stocks_price_prediction/data
+
 /.idea
 /.vscode
 __pycache__

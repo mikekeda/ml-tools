@@ -21,19 +21,21 @@ CORS(app)
 
 
 # Async function to fetch stock data
-async def fetch_stock_data(symbol: str) -> dict:
+async def fetch_stock_data(symbol: str) -> list:
     loop = asyncio.get_event_loop()
-    data = await loop.run_in_executor(None, lambda: yf.download(symbol, period="2y"))
+    data = await loop.run_in_executor(
+        None, lambda: yf.download(symbol, period="2y", multi_level_index=False)
+    )
     stock_data = [
         {
-            "datetime": time.strftime("%Y-%m-%d %H:%M:%S"),
+            "datetime": ts.strftime("%Y-%m-%d %H:%M:%S"),
             "open": row["Open"],
             "high": row["High"],
             "low": row["Low"],
             "close": row["Close"],
             "volume": row["Volume"],
         }
-        for time, row in data.iterrows()
+        for ts, row in data.iterrows()
     ]
     return stock_data
 
@@ -105,7 +107,6 @@ async def get_stock_prediction(request):
 
     if need_update:
         stock_data = await fetch_stock_data(symbol)
-        print(stock_data)
         with open(file_path, mode="w", newline="") as file:
             writer = csv.DictWriter(
                 file, fieldnames=["datetime", "open", "high", "low", "close", "volume"]
