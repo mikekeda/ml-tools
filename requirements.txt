@@ -1,6 +1,6 @@
 sanic==25.3.0
 Sanic-Cors==2.2.0
-numpy==2.3.5
+numpy==2.4.0
 pandas==2.3.3
 prophet==1.2.1
 requests==2.32.5
