@@ -1,8 +1,8 @@
-sanic==25.12.0
+sanic==25.12.1
 Sanic-Cors==2.2.0
-numpy==2.4.6
+numpy==2.5.1
 pandas==3.0.3
 prophet==1.3.0
 requests==2.34.2
-torch==2.12.0
-yfinance==1.3.0
+torch==2.13.0
+yfinance==1.5.1
