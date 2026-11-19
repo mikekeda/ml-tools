@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, mock_open
 from app import app, fetch_stock_data, get_stock_prices_prediction
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_fetch_stock_data():
     symbol = "AAPL"
     with patch("yfinance.download") as mock_yf:
@@ -36,7 +36,7 @@ from unittest.mock import patch
 import pytest
 
 
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_get_stock_prices_prediction():
     stock_data = [
         {"datetime": "2024-01-01 00:00:00", "close": 105},
@@ -68,7 +68,7 @@ async def test_get_stock_prices_prediction():
     assert forecast["2024-01-08 00:00:00"]["yhat"] == 110
 
 
-def test_stock_price_prediction(test_client):
+def test_stock_price_prediction():
     symbol = "AAPL"
     period = 14
     file_path = f"./ml_tools/stocks_price_prediction/data/{symbol}.csv"
@@ -96,7 +96,7 @@ def test_stock_price_prediction(test_client):
     assert response.json == [{"yhat": 110}]
 
 
-def test_dota2_win_prediction(test_client):
+def test_dota2_win_prediction():
     team1 = "1,2,3,4,5"
     team2 = "6,7,8,9,10"
 
@@ -109,7 +109,7 @@ def test_dota2_win_prediction(test_client):
     assert float(response.text) == 0.75
 
 
-def test_dota2_win_prediction_invalid_teams(test_client):
+def test_dota2_win_prediction_invalid_teams():
     team1 = "1,2,3,4"
     team2 = "6,7,8,9,10"
     request, response = app.test_client.get(
