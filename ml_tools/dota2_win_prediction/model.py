@@ -39,9 +39,7 @@ class HeroInteractionModel(nn.Module):
         dire_counter = F.relu(self.fc_counter(dire_hidden - radiant_hidden))
 
         # Combine features from synergies and counter-picks
-        combined_features = torch.cat(
-            (radiant_synergy + radiant_counter, dire_synergy + dire_counter), dim=1
-        )
+        combined_features = torch.cat((radiant_synergy + radiant_counter, dire_synergy + dire_counter), dim=1)
         combined_features = self.dropout(combined_features)
 
         # Final prediction layer

@@ -23,9 +23,7 @@ CORS(app)
 # Async function to fetch stock data
 async def fetch_stock_data(symbol: str) -> list:
     loop = asyncio.get_event_loop()
-    data = await loop.run_in_executor(
-        None, lambda: yf.download(symbol, period="2y", multi_level_index=False)
-    )
+    data = await loop.run_in_executor(None, lambda: yf.download(symbol, period="2y", multi_level_index=False))
     stock_data = [
         {
             "datetime": ts.strftime("%Y-%m-%d %H:%M:%S"),
@@ -55,9 +53,7 @@ async def get_stock_prices_prediction(stock_data: list, period: int) -> dict:
     )
     m.add_country_holidays(country_name="US")
     await loop.run_in_executor(None, m.fit, df_prophet)
-    future = await loop.run_in_executor(
-        None, lambda: m.make_future_dataframe(periods=7)
-    )
+    future = await loop.run_in_executor(None, lambda: m.make_future_dataframe(periods=7))
     forecast = await loop.run_in_executor(None, m.predict, future)
 
     period_ago = pd.to_datetime(datetime.now() - timedelta(days=period + 1))
@@ -108,9 +104,7 @@ async def get_stock_prediction(request):
     if need_update:
         stock_data = await fetch_stock_data(symbol)
         with open(file_path, mode="w", newline="") as file:
-            writer = csv.DictWriter(
-                file, fieldnames=["datetime", "open", "high", "low", "close", "volume"]
-            )
+            writer = csv.DictWriter(file, fieldnames=["datetime", "open", "high", "low", "close", "volume"])
             writer.writeheader()
             writer.writerows(stock_data)
     else:
@@ -123,13 +117,11 @@ async def get_stock_prediction(request):
     stock_data = {
         row["datetime"]: {"datetime": row["datetime"], "close": row["close"]}
         for row in stock_data
-        if row["datetime"]
-        >= (datetime.now() - timedelta(days=period)).strftime("%Y-%m-%d")
+        if row["datetime"] >= (datetime.now() - timedelta(days=period)).strftime("%Y-%m-%d")
     }
 
     combined_data = {
-        k: {**stock_data.get(k, {}), **forecast.get(k, {})}
-        for k in sorted(list(set(stock_data) | set(forecast)))
+        k: {**stock_data.get(k, {}), **forecast.get(k, {})} for k in sorted(list(set(stock_data) | set(forecast)))
     }
 
     return response.json(list(combined_data.values()))

@@ -56,9 +56,7 @@ async def test_get_stock_prices_prediction():
         "app.datetime", wraps=datetime
     ) as mock_datetime:  # Mock datetime
 
-        mock_datetime.now.return_value = (
-            fixed_now  # Force `datetime.now()` to return 2024-01-03
-        )
+        mock_datetime.now.return_value = fixed_now  # Force `datetime.now()` to return 2024-01-03
         forecast = await get_stock_prices_prediction(stock_data, period)
 
     print("Forecast Output:", forecast)  # Debugging output
@@ -74,14 +72,11 @@ def test_stock_price_prediction():
     file_path = f"./ml_tools/stocks_price_prediction/data/{symbol}.csv"
 
     # Mock file contents (simulate CSV file data)
-    mock_csv_data = (
-        "datetime,open,high,low,close,volume\n"
-        "2024-01-01 00:00:00,100,110,90,105,10000\n"
-    )
+    mock_csv_data = "datetime,open,high,low,close,volume\n" "2024-01-01 00:00:00,100,110,90,105,10000\n"
 
-    with patch("os.path.exists", return_value=True), patch(
-        "os.path.getmtime", return_value=10_000_000_000.0
-    ), patch("builtins.open", mock_open(read_data=mock_csv_data)), patch(
+    with patch("os.path.exists", return_value=True), patch("os.path.getmtime", return_value=10_000_000_000.0), patch(
+        "builtins.open", mock_open(read_data=mock_csv_data)
+    ), patch(
         "app.fetch_stock_data",
         return_value=[{"datetime": "2024-01-01 00:00:00", "close": 105}],
     ), patch(
@@ -112,7 +107,5 @@ def test_dota2_win_prediction():
 def test_dota2_win_prediction_invalid_teams():
     team1 = "1,2,3,4"
     team2 = "6,7,8,9,10"
-    request, response = app.test_client.get(
-        f"/api/ml-tools/dota2-win-prediction?team1={team1}&team2={team2}"
-    )
+    request, response = app.test_client.get(f"/api/ml-tools/dota2-win-prediction?team1={team1}&team2={team2}")
     assert response.status == 403
